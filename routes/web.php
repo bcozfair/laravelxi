@@ -55,7 +55,7 @@ Route::get('/bootstrap-example', function () {
     return view('bootstrap-example');
 });
 
-// week2-quiz1
+// week2 quiz1
 Route::get("/gallery", function () {
     $ant = "https://cdn3.movieweb.com/i/article/Oi0Q2edcVVhs4p1UivwyyseezFkHsq/1107:50/Ant-Man-3-Talks-Michael-Douglas-Update.jpg";
     $bird = "https://images.indianexpress.com/2021/03/falcon-anthony-mackie-1200.jpg";
@@ -66,7 +66,7 @@ Route::get("/gallery", function () {
     return view("test/index", compact("ant", "bird", "cat", "god", "spider"));
 });
 
-// week2-quiz2
+// week2 quiz2
 Route::get("/gallery/ant", function () {
     $ant = "https://cdn3.movieweb.com/i/article/Oi0Q2edcVVhs4p1UivwyyseezFkHsq/1107:50/Ant-Man-3-Talks-Michael-Douglas-Update.jpg";
     return view("test/ant", compact("ant"));
