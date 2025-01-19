@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use PhpParser\Node\Expr\FuncCall;
 
 Route::get('/', function () {
@@ -193,3 +196,52 @@ Route::get('/category/sport', [CategoryController::class, "sport"]);
 Route::get('/category/politic', [CategoryController::class, "politic"]);
 Route::get('/category/entertain', [CategoryController::class, "entertain"]);
 Route::get('/category/auto', [CategoryController::class, "auto"]);
+
+Route::get('product-index', function () {
+    $products = Product::get();
+    return view('query-test', compact('products'));
+})->name("product.index");
+
+
+Route::get('product-form', function () {    
+    return view('product-form');
+})->name("product.form");
+
+Route::post('/product-submit', function (Request $request) {    
+    $data = $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'price' => 'required|numeric|min:0',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    ], [
+        'name.required' => 'กรุณากรอกชื่อสินค้า',
+        'description.required' => 'กรุณากรอกรายละเอียดสินค้า',
+        'price.required' => 'กรุณากรอกราคา',
+        'price.numeric' => 'ราคาต้องเป็นตัวเลข',
+        'image.image' => 'ไฟล์ต้องเป็นรูปภาพ',
+    ]
+    );    
+
+    // ตรวจสอบว่ามีการอัปโหลดรูปภาพ
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('uploads', 'public');
+        $url = Storage::url($imagePath);
+        $data["image"] =$url;
+    }
+
+    // บันทึกข้อมูลในฐานข้อมูล
+    Product::create($data);
+
+    return redirect()->route('product.index')->with('success', 'เพิ่มสินค้าแล้ว!');
+})->name('product.submit');
+
+
+// claim Form
+use App\Http\Controllers\ClaimController;
+
+// Route to display the claim form
+Route::get('/claim-form', [ClaimController::class, 'showForm'])->name('claims.form');
+
+// Route to handle claim form submission
+Route::post('/claims/submit', [ClaimController::class, 'submit'])->name('claims.submit');
+
