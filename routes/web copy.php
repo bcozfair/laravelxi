@@ -6,8 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use PhpParser\Node\Expr\FuncCall;
-use App\Http\Controllers\ProfileController;
-
 
 Route::get('/', function () {
     return view('welcome');
@@ -91,7 +89,7 @@ Route::get("/gallery/cat", function () {
 // Week3
 Route::get("/teacher", function () {
     return view("teacher");
-})->middleware('auth', 'role:admin,teacher');
+});
 
 Route::get("/student", function () {
     return view("student");
@@ -247,14 +245,3 @@ Route::get('/claim-form', [ClaimController::class, 'showForm'])->name('claims.fo
 // Route to handle claim form submission
 Route::post('/claims/submit', [ClaimController::class, 'submit'])->name('claims.submit');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-require __DIR__.'/auth.php';
